@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center|top"
+    android:orientation="vertical"
+    android:paddingTop="50dp" >
+
+    <Button
+        android:id="@+id/btn_start_game"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/button_start" />
+
+    <Button
+        android:id="@+id/btn_high_scores"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/button_high_scores" />
+
+    <Button
+        android:id="@+id/btn_settings"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/button_settings" />
+
+    <Button
+        android:id="@+id/btn_credits"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/button_credits" />
+
+    <Button
+        android:id="@+id/btn_exit"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/button_exit" />
+    
+</LinearLayout>
