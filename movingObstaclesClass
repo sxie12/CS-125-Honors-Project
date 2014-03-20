@@ -1,0 +1,45 @@
+public class Obstacle {
+	private int x = Zen.getZenWidth();
+	private int len;
+	private int hi;
+	private int y;
+	private int dx = -4;
+	public int setLeft(int xx){
+		this.x = xx;
+		return this.x;
+	}
+	public void setY(int yy){
+		this.y = yy;
+	}
+	public int getLeft(){
+		return this.x;
+	}
+	public int getRight(){
+		int r = this.x + len;
+		return r; 
+	}
+	public int getY(){
+		return this.y;
+	}
+	public int getBottom(){
+		int b = this.y + hi;
+		return b;
+	}
+	public int getDX(){
+		return this.dx;
+	}
+	public Obstacle(int yy, int length, int height) {
+		y = yy;
+		len = length;
+		hi = height;
+	}
+	public void draw(int col) {	
+		if (col == 1) Zen.setColor(0, 0, 0);  
+		else Zen.setColor(92,05,05);
+		Zen.fillRect(x, y, len, hi);
+	}
+	
+	public void newX() {				
+			x = (x+dx);
+	}
+}
