@@ -1,0 +1,152 @@
+
+public class MainGame {
+	public static void main(String[] args){
+		int x = Zen.getZenWidth()/2-20, y = 380;							//position of block
+		int dy = 0;														              	// velocity of jump.
+				
+		Obstacle ob1 = new Obstacle(362,60, 35);
+		Obstacle ob2 = new Obstacle(240,45,25);
+		int b = ob2.setLeft(ob2.getLeft() + 150);
+		Obstacle ob3 = new Obstacle(320,70,55);
+		int c = ob3.setLeft(ob3.getLeft() + 300);
+		Obstacle ob4 = new Obstacle(240,40,80);
+		int d = ob4.setLeft(ob4.getLeft() + 370);
+		Obstacle ob5 = new Obstacle(240,90,25);
+		int e = ob5.setLeft(ob5.getLeft() + 510);
+		Obstacle ob6 = new Obstacle(240,25,180);
+		int f = ob6.setLeft(ob6.getLeft() + 680);
+		Obstacle ob7 = new Obstacle(320,80,30);
+		int g = ob7.setLeft(ob7.getLeft() + 780);
+		Obstacle ob8 = new Obstacle(160,80,30);
+		int h = ob8.setLeft(ob8.getLeft() + 780);
+		Obstacle ob9 = new Obstacle(70,300,200);
+		int i = ob9.setLeft(ob9.getLeft() + 930);
+		Obstacle ob10 = new Obstacle(320,300,180);
+		int j = ob10.setLeft(ob10.getLeft() + 930);
+		Obstacle ob11 = new Obstacle(0,550,40);
+		int k = ob11.setLeft(ob11.getLeft() + 930);
+			while(Zen.isRunning()) {
+				draw(x,y);
+				dy = checkjump1(x,y,dy,ob1,ob2,ob3,ob4,ob5,ob6,ob7,ob8,ob9,ob10);
+				y = newy(y,dy);
+				ob1.draw(1);
+				ob1.newX();
+				ob2.draw(1);
+				ob2.newX();
+				ob3.draw(1);
+				ob3.newX();
+				ob4.draw(1);
+				ob4.newX();
+				ob5.draw(1);
+				ob5.newX();
+				ob6.draw(1);
+				ob6.newX();
+				ob7.draw(1);
+				ob7.newX();
+				ob8.draw(1);
+				ob8.newX();
+				ob9.draw(1);
+				ob9.newX();
+				ob10.draw(1);
+				ob10.newX();
+				ob11.draw(1);
+				ob11.newX();
+				x = contactX(x,y,ob1);
+				x = contactX(x,y,ob2);
+				x = contactX(x,y,ob3);
+				x = contactX(x,y,ob4);
+				x = contactX(x,y,ob5);
+				x = contactX(x,y,ob6);
+				x = contactX(x,y,ob7);
+				x = contactX(x,y,ob8);
+				x = contactX(x,y,ob9);
+				x = contactX(x,y,ob10);
+				x = contactX(x,y,ob11);
+				//x = reset(x);
+				if (ob11.getRight() < 0 || x + 20 <= 0){
+					x = Zen.getZenWidth()/2-20;
+					ob1.setLeft(Zen.getZenWidth());
+					ob2.setLeft(b);
+					ob3.setLeft(c);
+					ob4.setLeft(d);
+					ob5.setLeft(e);
+					ob6.setLeft(f);
+					ob7.setLeft(g);
+					ob8.setLeft(h);
+					ob9.setLeft(i);
+					ob10.setLeft(j);
+					ob11.setLeft(k);
+				}
+			Zen.sleep(30);			
+												//prepare for next cycle
+			Zen.flipBuffer();
+			
+			}
+		
+			}
+	
+		//}	
+	public static void draw(int x, int y) {				//draw graphics
+		Zen.setColor(0, 51, 102);										//background
+		Zen.fillRect(0, 0, Zen.getZenWidth(), Zen.getZenHeight());
+		Zen.setColor(0, 0, 0);											//floor
+		Zen.fillRect(0, 400, Zen.getZenWidth(), Zen.getZenHeight());
+		//Zen.fillRect(0,70, 800, 1);
+		Zen.setColor(102, 102, 102);										//block
+		Zen.fillRect(x, y, 20, 20);
+	}
+	
+	public static int checkjump1(int x, int y, int dy, Obstacle ob1, Obstacle ob2, Obstacle ob3, Obstacle ob4, Obstacle ob5, Obstacle ob6, Obstacle ob7, Obstacle ob8, Obstacle ob9, Obstacle ob10){
+		 if (Zen.isKeyPressed((char)32) && x + 20 >= ob3.getLeft() && x <= ob3.getRight() && y >= ob3.getY() + 55) dy = 0;
+		 else if (Zen.isKeyPressed((char)32) && (y == 380 //|| y + 20 == 240// || ((y + 20 == ob2.getY()) && x + 20 >= ob2.getLeft() && x <= ob2.getRight())
+				||y + 20 == 362 && (x + 20 >= ob1.getLeft() && x <= ob1.getRight())
+				||y + 20 == 240 && (x + 20 >= ob2.getLeft() && x <= ob2.getRight())
+				||y + 20 == 320 && (x + 20 >= ob3.getLeft() && x <= ob3.getRight())
+				||y + 20 == 240 && (x + 20 >= ob4.getLeft() && x <= ob4.getRight())
+				||y + 20 == 240 && (x + 20 >= ob5.getLeft() && x <= ob5.getRight())
+				||y + 20 == 240 && (x + 20 >= ob6.getLeft() && x <= ob6.getRight())
+				||y + 20 == 320 && (x + 20 >= ob7.getLeft() && x <= ob7.getRight())
+				||y + 20 == 160 && (x + 20 >= ob8.getLeft() && x <= ob8.getRight())
+				||y + 20 == 70 && (x + 20 >= ob9.getLeft() && x <= ob9.getRight())
+				||y + 20 == 320 && (x + 20 >= ob10.getLeft() && x <= ob10.getRight()))) dy = -20;
+		
+		//else if (y + 20 == ob2.getY() && x + 20 >= ob2.getLeft() && x <= ob2.getRight() && dy >= 0) dy = 0 ; 	
+		else if (y + 20 == 320 && (x + 20 >= ob3.getLeft() && x <= ob3.getRight()) && dy >=0 ) dy = 0;
+		else if (y + 20 == 240 && (x + 20 >= ob4.getLeft() && x <= ob4.getRight()) && dy >= 0) dy = 0;
+		else if (y + 20 == 362 && (x + 20 >= ob1.getLeft() && x <= ob1.getRight()) && dy >= 0) dy = 0;
+		else if (y + 20 == 240 && (x + 20 >= ob5.getLeft() && x <= ob5.getRight()) && dy >= 0) dy = 0;
+		else if (y + 20 == 240 && (x + 20 >= ob6.getLeft() && x <= ob6.getRight()) && dy >= 0) dy = 0;
+		else if (y + 20 == 320 && (x + 20 >= ob7.getLeft() && x <= ob7.getRight()) && dy >= 0) dy = 0;
+		else if (y + 20 == 160 && (x + 20 >= ob8.getLeft() && x <= ob8.getRight()) && dy >= 0) dy = 0;
+		else if (y + 20 == 70 && (x + 20 >= ob9.getLeft() && x <= ob9.getRight()) && dy >= 0) dy = 0;
+		else if (y + 20 == 320 && (x + 20 >= ob10.getLeft() && x <= ob10.getRight()) && dy >= 0) dy = 0;
+		//else if (y + 20 > ob10.getLeft()) dy = 0;
+		
+		else if (Zen.isKeyPressed((char)32) && x + 20 >= ob4.getLeft() && x <= ob4.getRight() && y >= ob4.getY() + 80) dy = -10;
+		else if (y < 380) dy += 2;
+		
+		
+		return dy;
+	} 		    
+	public static int newy(int y, int dy){
+		if(y+dy<380) return y+dy;									
+			
+		else return 380;
+	}
+	
+	public static int contactX(int x, int y, Obstacle ob){
+		if (x + 20 >= ob.getLeft() && x < ob.getRight() && (y > ob.getY() && y < ob.getBottom()||y+20 > ob.getY() && y+20 < ob.getBottom()))                     
+			x = x + ob.getDX();
+		return x;
+	}
+	
+
+	
+	
+	
+	
+	
+	
+	
+
+}
