@@ -1,0 +1,65 @@
+
+public class Player {
+	private int x;
+	private int y;
+	private int dx;
+	private int dy;
+	public Player(int xx, int yy, int dxx, int dyy) {
+		x=xx;
+		y=yy;
+		dx=dxx;
+		dy=dyy;
+	}
+	public int getX() {
+		return x;
+	}
+	public int getY() {
+		return y;
+	}
+	public int getDx() {
+		return dx;
+	}
+	public int getDy() {
+		return dy;
+	}
+	public void updatePlayer(int maxY, int initmaxY, int stagedx, String status) {
+		updateDx(status,stagedx);
+		updateDy(maxY,status);
+		updateX(status);
+		updateY(maxY,initmaxY,status);
+	}
+	private void updateX(String status) {
+		if(status.equals("reset"))
+			x=Zen.getZenWidth()/2;
+		else
+			x+=dx;
+	}
+	private void updateY(int maxY, int initmaxY, String status) {
+		if(status.equals("reset"))
+			y=initmaxY;
+		else if(y+dy>maxY && !status.equals("push"))
+			y=maxY;
+		else
+			y+=dy;
+	}
+	private void updateDx(String status, int stagedx) {
+		if(status.equals("push"))
+			dx=stagedx;
+		else
+			dx=0;
+	}
+	private void updateDy(int maxY, String status) {
+		if(status.equals("reset"))
+			dy=0;
+		//test for jump (space)
+		else if(y>=maxY) {
+			if(Zen.isKeyPressed((char)32))
+				dy=-12;
+			else if(!status.equals("push"))
+				dy=0;
+		}
+		else if(y<maxY)
+			dy+=1;
+	}
+	
+}
