@@ -1,0 +1,331 @@
+/* Standalone version gameplay for Honors Project
+ * Note: this program utilizes Zen, so make sure to run this in a package that
+ * also contains Zen.java.
+ * */
+
+/* Fixes:
+ * maybe more complex color-coding: top of block is landing ability, majority is moving ability
+ * improve pause/reset response. Click every time instead of holding allowed? maybe like click trick
+ * make type into subclass of obstacle?
+ * pass player as a whole to functions instead of x and y
+ * use set methods at beginning of every level, update between frames
+ * move methods for player to player class, obstacles to obstacles class
+ * make symmetry between update player and update obstacles (is calling update on player.update necessary, or just update)
+ * put set player in rest if statement with others, take reset checking out of update player
+ * clean up push test in updateY
+ * caps lock on r?
+ * instead of allowed=setupdate just make method void (technique in moveObstacles)
+ * 
+ * make more levels!
+ * make it so moving obstacles can't be placed in others and have limited range of where to go (maybe only change allowed region/only change x)
+ * more details? Collectable upgrades, flex on jump, trail/change color/bonus points on upgrade collection
+ * keep high score, allow try again at end
+ * game over at zero points (maybe make penalty for losing more strict)
+ * make coins and end of level obstacles?
+ * */
+
+public class RunnerGame3 {
+	
+	public static void main(String[] args) {
+		
+		//size of player
+		final int PSIZE=20;
+		//size of obstacles
+		final int OSIZE=40;
+		//y position of floor
+		final int FLOOR=300;
+		//width of level
+		final int[] LEVEL_SIZE={2400,2400,1600};
+		//x velocity of stage
+		final int STAGE_DX=-4;
+		//jump velocity
+		final int JUMP=-8;
+		//gravity
+		final double GRAVITY=0.4;
+		//range of jump flat
+		int range=(int)(STAGE_DX*(2*JUMP/GRAVITY-5));
+		final int RANGE=range+range%STAGE_DX;
+		//range of jump 1 step up
+		int jump_range=(int)(-STAGE_DX*(-JUMP+Math.sqrt(JUMP*JUMP-GRAVITY*OSIZE))/GRAVITY);
+		final int JUMP_RANGE=jump_range+jump_range%STAGE_DX;
+		//height of jump
+		final int JUMP_HEIGHT=(int)(JUMP*JUMP/(2*GRAVITY)+20);
+		//max number of obstacles at once
+		final int[] NUM_OBSTACLES={8,12,2};
+		//initial positions of blocks (quasi final)
+		final int[][][] INITIAL={
+			//level 1
+			{{1200,FLOOR,1},{1500,FLOOR,1},{1500+JUMP_RANGE,FLOOR-OSIZE,1},{1500+3*JUMP_RANGE,FLOOR,2},{1500+2*JUMP_RANGE,FLOOR-2*OSIZE,1},{1500+3*JUMP_RANGE,FLOOR-3*OSIZE,1},{1500+3*JUMP_RANGE+RANGE,FLOOR-3*OSIZE,1},{1500+3*JUMP_RANGE+RANGE,FLOOR,1}},
+			//level 2
+			{{1240,FLOOR-OSIZE,1},{1200,FLOOR,2},{1240+JUMP_RANGE,FLOOR-2*OSIZE,1},{1240+JUMP_RANGE,FLOOR-OSIZE,2},{1240+JUMP_RANGE,FLOOR,2},{1240+JUMP_RANGE+RANGE,FLOOR-2*OSIZE,2},{1800,FLOOR-OSIZE,1},{1800,FLOOR,2},{1800+RANGE,FLOOR-OSIZE,1},{1800+RANGE,FLOOR-2*OSIZE,2},{1800+2*RANGE,FLOOR-OSIZE,1},{1800+2*RANGE,FLOOR,2}},
+			//level 3
+			{{1000,FLOOR,1},{1200,FLOOR,3}}
+			};
+		//initialize player
+		Player player=new Player(Zen.getZenWidth()/2,FLOOR-PSIZE,0,0);
+		//holds obstacles
+		Obstacles[] obstacles=new Obstacles[NUM_OBSTACLES[1]];
+		//Collectables
+		final int[][] COINS={
+			{1500+3*JUMP_RANGE+(int)(1.5*RANGE)+OSIZE,FLOOR-4*OSIZE-JUMP_HEIGHT},
+			{1800+(int)(2.5*RANGE)+OSIZE,FLOOR-2*OSIZE-JUMP_HEIGHT,1},
+			{1200,100}};
+		int[] coin=new int[2];
+		coin[0]=COINS[0][0];
+		coin[1]=COINS[0][1];
+		//holds y status 0 reset, 1 run, 2 push
+		int[][] allowed=new int[2][FLOOR];
+		//level
+		int level=1;
+		//finished all levels
+		boolean done=false;
+		//score
+		double score=0;
+		//revert after reset
+		double oldscore=0;
+		//horizontal shift
+		int shift=0;
+		//position of end of level;
+		int endOfLevel=LEVEL_SIZE[level-1];
+		//game status (reset, running, paused)
+		String status="paused";
+		//controls toggle
+		boolean showControls=false;
+		//instantaneous click
+		int[] click={0,0};
+		//time of last click
+		long oldClickTime=0;
+		//if obstacles moved
+		boolean moved=false;
+		
+		obstacles=setObstacles(obstacles,FLOOR,OSIZE,INITIAL[level-1],NUM_OBSTACLES[level-1]);
+		allowed=setupdateAllowed(allowed,obstacles,player.getX(),FLOOR,PSIZE,OSIZE,STAGE_DX,NUM_OBSTACLES[level-1]);
+		
+		//game loop
+		while(Zen.isRunning()) {
+			//draw all graphics
+			draw(player.getX(),player.getY(),obstacles,coin,NUM_OBSTACLES[level-1],FLOOR,PSIZE,OSIZE,shift,status,level,(int)score,endOfLevel,showControls,done);
+			//update status
+			status=updateStatus(status,player.getX(),allowed[1][player.getY()],PSIZE,player.getDx(),endOfLevel,moved);			
+			//update shift
+			shift=updateShift(status,shift,click);
+			if(status.equals("next")) {
+				if(level+1>INITIAL.length) {
+					done=true;
+					level=1;
+					status="paused";
+				}
+				else {				
+					level++;
+					oldscore=score;
+					status="reset";
+				}
+			}
+			if(status.equals("reset")) {
+				obstacles=setObstacles(obstacles,FLOOR,OSIZE,INITIAL[level-1],NUM_OBSTACLES[level-1]);
+				allowed=setupdateAllowed(allowed,obstacles,player.getX(),FLOOR,PSIZE,OSIZE,STAGE_DX,NUM_OBSTACLES[level-1]);
+				endOfLevel=LEVEL_SIZE[level-1];
+				coin[0]=COINS[level-1][0];
+				coin[1]=COINS[level-1][1];
+				oldscore=oldscore-100>0?oldscore-100:0;
+				moved=false;
+			}
+			if(!status.equals("paused")) {
+				//update player
+				player.updatePlayer(allowed,FLOOR-PSIZE,STAGE_DX,status,JUMP,GRAVITY);
+				//update obstacles
+				updateObstacles(obstacles,STAGE_DX,status,NUM_OBSTACLES[level-1]);
+				allowed=setupdateAllowed(allowed,obstacles,player.getX(),FLOOR,PSIZE,OSIZE,STAGE_DX,NUM_OBSTACLES[level-1]);
+				score=updateScore(score,oldscore,player.getDx(),status);
+				endOfLevel+=updateEndOfLevel(STAGE_DX);
+				coin[0]+=updateCoin(STAGE_DX);
+			}
+			else {
+				//update position of click
+				click=updateClick(oldClickTime);
+				//toggle controls display
+				showControls=updateShowControls(showControls,click);
+				moved=moveObstacles(obstacles,INITIAL[level-1],click,moved,NUM_OBSTACLES[level-1],OSIZE);
+				//used to test if click has changed
+				oldClickTime=updateOldClickTime();
+			}
+			//prepare for next cycle
+			Zen.sleep(10);
+			Zen.flipBuffer();
+		}
+		
+	}
+	
+	//set positions of obstacles
+	public static Obstacles[] setObstacles(Obstacles[] obs, int floor, int osize, int[][] initial, int numobstacles) {
+		for(int i=0;i<numobstacles;i++)
+			obs[i]=new Obstacles(initial[i][0],initial[i][1]-osize,initial[i][2]);
+		return obs;
+	}
+	
+	public static Obstacles[] updateObstacles(Obstacles[] obs, int DX, String status, int numobstacles) {
+		for(int i=0;i<numobstacles;i++)
+			obs[i].updateX(DX);
+		return obs;
+	}
+	
+	public static int[][] setupdateAllowed(int[][] allowed, Obstacles[] obs, int x, int floor, int psize, int osize, int stagedx, int numobstacles) {
+		for(int a=0;a<2;a++) {
+			for(int i=0;i<allowed[1].length+1-psize;i++)
+				allowed[a][i]=1;
+			for(int i=allowed[1].length+1-psize;i<allowed[1].length;i++)
+				allowed[a][i]=2;
+			for(int j=0;j<numobstacles;j++)
+				if(obs[j].getX()-psize<=x+stagedx*(1-a) && x+stagedx*(1-a)<obs[j].getX()+osize)//unsure about +/-1
+					for(int k=obs[j].getY()+1-psize;k<obs[j].getY()+osize-1;k++) {//
+						if(obs[j].getType()==2)
+							allowed[a][k]=0;
+						else
+							allowed[a][k]=2;
+					}
+		}
+		return allowed;
+		
+	}
+	
+	//update game status
+	public static String updateStatus(String status, int x, int allowed, int psize, int dx, int endoflevel, boolean moved) {
+		if(Zen.isKeyPressed('f'))
+			return "reset";
+		else if(status.equals("paused")) {
+			if(Zen.isKeyPressed('e')) {
+				Zen.sleep(250);
+				if(allowed==0 || moved)
+					return "reset";
+				else if(allowed==2)
+					return "push";
+				return "running";
+			}
+			return "paused";
+		}
+		else if(Zen.isKeyPressed('e')) {
+			Zen.sleep(250);
+			return "paused";
+		}
+		if(endoflevel<-dx)
+			return "next";
+		else if(x<-dx || allowed==0) {
+			Zen.sleep(500);
+			return "reset";
+		}
+		else if(allowed==2)
+			return "push";
+		return "running";
+	}
+	
+	public static int updateShift(String status, int shift, int[] click) {
+		if(status.equals("paused")) {
+			if(Zen.isKeyPressed('a'))
+				return shift+5;
+			else if(Zen.isKeyPressed('d'))
+				return shift-5;
+			else if(Math.abs(click[0]-120)<=100 && Math.abs(click[1]-125)<=15)
+				return 0;
+			return shift;
+		}
+		return 0;
+	}
+	
+	public static int updateEndOfLevel(int dx) {
+		return dx;
+	}
+	
+	public static int updateCoin(int dx) {
+		return dx;
+	}
+	
+	//draw graphics
+	public static void draw(int x, int y, Obstacles[] obs, int[] coin, int numobstacles, int floor, int psize, int osize, int shift, String status, int level, int score, int endOfLevel, boolean showControls, boolean done) {
+		//background
+		Zen.setColor(200, 100, 50);
+		Zen.fillRect(0, 0, Zen.getZenWidth(), Zen.getZenHeight());
+		//floor
+		Zen.setColor(0, 0, 0);
+		Zen.fillRect(0, floor, Zen.getZenWidth(), Zen.getZenHeight());
+		//text
+		PixelatedText.drawPixelatedText("Level:"+level,20,20,4);
+		PixelatedText.drawPixelatedText("Score:"+score,435,20,4);
+		//end of level
+		Zen.setColor(100,100,100);
+		Zen.fillRect(endOfLevel+shift,0,3,floor);
+		//obstacles
+		for(int i=0;i<numobstacles;i++) {
+			if(obs[i].getType()==1)
+				Zen.setColor(0,0,0);
+			else if(obs[i].getType()==2)
+				Zen.setColor(200,0,0);
+			else
+				Zen.setColor(0,0,200);
+			Zen.fillRect(obs[i].getX()+shift, obs[i].getY(), osize, osize);
+		}
+		//coin
+		Zen.setColor(200,200,0);
+		Zen.fillRect(coin[0]+shift,coin[1],10,10);
+		//player
+		Zen.setColor(0, 200, 200);
+		Zen.fillRect(x+shift, y, psize, psize);
+		//pause
+		if(status.equals("paused")) {
+			Zen.setColor(0, 0, 0);
+			Zen.fillRect(Zen.getZenWidth()-80, 20, 20, 60);
+			Zen.fillRect(Zen.getZenWidth()-40, 20, 20, 60);
+			if(!showControls) {
+				PixelatedText.drawPixelatedText("+Controls",20,60,6);
+				PixelatedText.drawPixelatedText("+Return",20,110,6);
+			}
+			else {
+				PixelatedText.drawPixelatedText("-Controls",20,60,6);
+				PixelatedText.drawPixelatedText("Hit space to jump, e to pause, and f to reset.",20,110,4);
+				PixelatedText.drawPixelatedText("Use a and d to scroll while paused.",20,140,4);
+				PixelatedText.drawPixelatedText("Click and drag blue blocks to move them.",20,170,4);
+			}
+			if(done) {
+				PixelatedText.drawPixelatedText("Congratulations!",380,110,8);
+				PixelatedText.drawPixelatedText("You finished the game!",430,170,4);
+			}
+		}
+	}
+
+	//toggle controls display
+	public static boolean updateShowControls(boolean showControls, int[] click) {
+		if(Math.abs(click[0]-150)<=130 && Math.abs(click[1]-75)<=15)
+			return !showControls;
+		return showControls;
+	}
+	
+	public static int[] updateClick(long oldClickTime) {
+		int[] temp={Zen.getMouseClickX(),Zen.getMouseClickY()};
+		int[] temp2={0,0};
+		if(Zen.getMouseClickTime()!=oldClickTime)
+			return temp;
+		return temp2;
+	}
+	
+	public static long updateOldClickTime() {
+		return Zen.getMouseClickTime();
+	}
+	
+	public static double updateScore(double score, double oldscore, int dx, String status) {
+		if(status.equals("reset"))
+			return oldscore;
+		return score+1+dx/4.0;
+	}
+	
+	public static boolean moveObstacles(Obstacles[] obstacles, int[][] initial, int[] click, boolean moved, int numobstacles, int osize) {
+		for(int i=0;i<numobstacles;i++)
+			if(obstacles[i].getType()==3 && Math.abs(click[0]-(obstacles[i].getX()+osize/2))<=osize/2 && Math.abs(click[1]-(obstacles[i].getY()+osize/2))<=osize/2) {
+				int[] temp={obstacles[i].getX(),obstacles[i].getY()};
+				obstacles[i].setX(Zen.getMouseX()-osize/2);
+				obstacles[i].setY(Zen.getMouseY()-osize/2);
+				initial[i][0]+=obstacles[i].getX()-temp[0];
+				initial[i][1]+=obstacles[i].getY()-temp[1];
+				return true;
+			}
+		return moved;
+	}
+}
