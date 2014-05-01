@@ -81,7 +81,7 @@ public class RunnerGame4 {
 		//holds obstacles
 		Obstacles[] obstacles=new Obstacles[16]; //update this to largest necessary number of obstacles
 		//level
-		int level=3;
+		int level=1;
 		//Collectables
 		final int[][] COINS={
 			{1500+3*JUMP_RANGE+(int)(1.5*RANGE)+OSIZE,FLOOR-4*OSIZE-JUMP_HEIGHT,1},
