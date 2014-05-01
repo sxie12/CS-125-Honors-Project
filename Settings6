@@ -1,0 +1,151 @@
+public class Settings {
+	final static String[] difficulties = { "Easy", "Medium", "Hard" };
+	public static int index = 1;
+	public static boolean pressDiff = true;
+	public static boolean pressClear = true;
+
+	public static void settings() {
+		while (Zen.isRunning()) {
+
+			Zen.setColor(200, 100, 50);
+			Zen.fillRect(0, 0, Zen.getZenWidth(), Zen.getZenHeight());
+
+			PixelatedText.drawPixelatedText("Settings", 390, 20, 6);
+
+			PixelatedText.drawPixelatedText("Difficulty: " + difficulties[index],
+					100, 100, 4);
+			PixelatedText
+			.drawPixelatedText("Clear highscore list", 100, 150, 4);
+
+			/**
+			 * Testing where the button was 
+			 * Zen.setColor(0, 200, 200);
+			 * Zen.fillRect(93, 93, 200, 40);
+			 * 
+			 * Zen.setColor(0, 200, 200);
+			 * Zen.fillRect(93, 140, 400, 40);
+			 */
+
+
+			if (Zen.getMouseClickX() >= 93 && Zen.getMouseClickX() <= 298
+					&& Zen.getMouseClickY() >= 93
+					&& Zen.getMouseClickY() <= 133 && pressDiff) {
+				// Pop up difficulty menu
+				pressClear = false;
+				popUpDiff();
+				pressClear = true;
+			}
+			if (Zen.getMouseClickX() >= 93 && Zen.getMouseClickX() <= 493
+					&& Zen.getMouseClickY() >= 140
+					&& Zen.getMouseClickY() <= 180 && pressClear) {
+				// Pop up clear high scores warning
+				pressDiff = false;
+				popUpClear();
+				pressDiff = true;
+			}
+
+			Zen.setColor(0, 200, 200);
+			// Back button design
+			Zen.fillRect(700, 270, 200, 60);
+
+			PixelatedText.drawPixelatedText("Back", 762, 290, 4);
+
+			if (Zen.getMouseClickX() >= 700 && Zen.getMouseClickX() <= 900
+					&& Zen.getMouseClickY() >= 270
+					&& Zen.getMouseClickY() <= 330) {
+				// Goto the interface menu
+				Interface.start();
+			}
+			
+			Zen.sleep(45);
+			Zen.flipBuffer();
+		}
+	}
+	
+	public static void popUpDiff() {
+		popUpDesign();
+		PixelatedText.drawPixelatedText("Easy", 350, 120, 4);
+		PixelatedText.drawPixelatedText("Medium", 350, 180, 4);
+		PixelatedText.drawPixelatedText("Hard", 350, 240, 4);
+		Zen.fillRect(630, 112, 5, 35);
+		Zen.fillRect(660, 112, 5, 35);
+		Zen.fillRect(630, 112, 35, 5);
+		Zen.fillRect(630, 142, 35, 5);
+		Zen.fillRect(630, 172, 5, 35);
+		Zen.fillRect(630, 172, 35, 5);
+		Zen.fillRect(630, 202, 35, 5);
+		Zen.fillRect(660, 172, 5, 35);
+		Zen.fillRect(630, 232, 5, 35);
+		Zen.fillRect(630, 232, 35, 5);
+		Zen.fillRect(630, 262, 35, 5);
+		Zen.fillRect(660, 232, 5, 35);
+		Zen.setColor(200, 100, 50);
+		if(index == 0) {
+			Zen.fillRect(635, 117, 25, 25);
+		} else if(index == 1) {
+			Zen.fillRect(635, 177, 25, 25);
+		} else {
+			Zen.fillRect(635, 237, 25, 25);
+		}
+		if (Zen.getMouseClickX() >= 315 && Zen.getMouseClickX() <= 690
+				&& Zen.getMouseClickY() >= 110
+				&& Zen.getMouseClickY() <= 150) {
+			// change to easy
+			index = 0;
+		} else if (Zen.getMouseClickX() >= 315 && Zen.getMouseClickX() <= 690
+				&& Zen.getMouseClickY() >= 170
+				&& Zen.getMouseClickY() <= 210) {
+			// change to medium
+			index = 1;
+		} else if (Zen.getMouseClickX() >= 315 && Zen.getMouseClickX() <= 690
+				&& Zen.getMouseClickY() >= 230
+				&& Zen.getMouseClickY() <= 270) {
+			// change to hard
+			index = 2;
+		} else {
+			;
+		}
+	}
+	
+	public static void popUpClear() {
+		popUpDesign();
+		Zen.setColor(0, 0, 255);
+		Zen.fillRect(316, 230, 188, 60);
+		Zen.setColor(255, 0, 0);
+		Zen.fillRect(503, 230, 187, 60);
+		PixelatedText
+		.drawPixelatedText("Clear highscore", 360, 120, 4);
+		PixelatedText.drawPixelatedText("list", 470, 160, 4);
+		PixelatedText.drawPixelatedText("No", 390, 250, 4);
+		PixelatedText.drawPixelatedText("Yes", 570, 250, 4);
+		
+		if (Zen.getMouseClickX() >= 503 && Zen.getMouseClickX() <= 690
+				&& Zen.getMouseClickY() >= 230
+				&& Zen.getMouseClickY() <= 290) {
+			// yes
+			HighScoreList.clearHighScores();
+		}
+	}
+	
+	public static void popUpDesign() {
+		Zen.setColor(0, 200, 200);
+		Zen.fillRect(315, 90, 375, 200);
+		Zen.setColor(255, 255, 255);
+		Zen.drawLine(315,90,690,90);
+		Zen.drawLine(315,89,690,89);
+		Zen.drawLine(315,88,690,88);
+		Zen.drawLine(315,290,690,290);
+		Zen.drawLine(315,291,690,291);
+		Zen.drawLine(315,292,690,292);
+		Zen.drawLine(315,88,315,292);
+		Zen.drawLine(314,88,314,292);
+		Zen.drawLine(313,88,313,292);
+		Zen.drawLine(690,88,690,292);
+		Zen.drawLine(691,88,691,292);
+		Zen.drawLine(692,88,692,292);
+	}
+
+	public static void main(String[] args) {
+		Settings.settings();
+	}
+}
