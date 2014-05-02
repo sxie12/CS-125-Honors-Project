@@ -1,0 +1,9 @@
+I changed these files 
+- Interface.java
+- HighScoreList.java
+- Settings.java
+- SettingsDiff.java
+
+I added in 
+-TextIO.java
+-Highscores file
