@@ -1,0 +1,6 @@
+Once you are done, let me test it and send him the GitHub link. I will clean (delete everything that is not the final version of the game) the GitHub folder when we are done.
+
+Changes
+- I made a game over screen that does the high score things
+- I changed RunnerGame a bit by making the menu button go to the game over screen instead of going back
+- I added in a new settings option to set the start level
