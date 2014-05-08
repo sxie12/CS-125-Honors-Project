@@ -23,8 +23,8 @@ public class two_player_mode {
 		Zen.fillRect(0, Zen.getZenHeight()/2, Zen.getZenWidth() - 1, 2); //black center line
 		Zen.fillRect(gx, Zen.getZenHeight()/2 - 5, 11, 11);    			//block in center that shows distance
 		
-		PixelatedText.drawPixelatedText("Score:"+score1,s1x,210,3);		//player 1 score
-		PixelatedText.drawPixelatedText("Score:"+score2,s2x,180,3);		//player 2 score
+		PixelatedText.drawPixelatedText("Score:"+score1,s1x,Zen.getZenHeight()/2 + 10,3);		//player 1 score
+		PixelatedText.drawPixelatedText("Score:"+score2,s2x,Zen.getZenHeight()/2 - 20,3);		//player 2 score
 	}
 	public static void checkOrbs(OB[] orbs){
 		if (orbs[0].getLeft() + 30 < 0) orbs[0].setLeft(Zen.getZenWidth());
@@ -113,7 +113,7 @@ public class two_player_mode {
 		int yb = Zen.getZenHeight() - 26;	 // bottom block y
 		int dyt = 0;						// top block dy 
 		int dyb = 0;					   // bottom block dy
-		int gx = 0;						  // little center guide block dx
+		int gx = 980;						  // little center guide block dx
 		int s1x = Zen.getZenWidth() - 150;  // position of score1: used to move   	  
 		int s2x = 16;					   //  position of score2: used to move
 		int score1 = 0;					  //value of scores
@@ -164,10 +164,10 @@ public class two_player_mode {
 		while (Zen.isRunning() && ! state){
 		draw(xt,xb,yt,yb, gx, score1, score2 , s1x, s2x);
 		Zen.setColor(0, 200, 200);
-		Zen.fillRect(Zen.getZenWidth()/2 - 50, 270, 100, 40);
-		Zen.fillOval(Zen.getZenWidth()/2 + 21, 270, 50, 40);
-		Zen.fillOval(Zen.getZenWidth()/2 - 74, 270, 50, 40);
-		PixelatedText.drawPixelatedText("Ready",Zen.getZenWidth()/2 - 35,283,3);
+		Zen.fillRect(Zen.getZenWidth()/2 - 50, Zen.getZenHeight() -140, 100, 40);
+		Zen.fillOval(Zen.getZenWidth()/2 + 21, Zen.getZenHeight() - 140, 50, 40);
+		Zen.fillOval(Zen.getZenWidth()/2 - 74, Zen.getZenHeight() - 140, 50, 40);
+		PixelatedText.drawPixelatedText("Ready",Zen.getZenWidth()/2 - 35, Zen.getZenHeight() - 127,3);
 		
 		Zen.setColor(200,100,50);
 		Zen.fillRect(Zen.getZenWidth()/2 - 50, 100, 100, 40);
@@ -175,11 +175,11 @@ public class two_player_mode {
 		Zen.fillOval(Zen.getZenWidth()/2 - 74, 100, 50, 40);
 		PixelatedText.drawPixelatedText("Ready",Zen.getZenWidth()/2 - 35,113,3);
 		// when both ready buttons are clicked the game begins
-		if(Zen.getMouseClickX() >= Zen.getZenWidth()/2 - 75 && Zen.getMouseClickX() <= Zen.getZenWidth()/2 + 71 && Zen.getMouseClickY() >= Zen.getZenHeight()/2 - 102 && Zen.getMouseClickY() <= Zen.getZenHeight()/2 - 60) { ready1 = true;}                       
-		if(Zen.getMouseClickX() >= Zen.getZenWidth()/2 - 75 && Zen.getMouseClickX() <= Zen.getZenWidth()/2 + 71 && Zen.getMouseClickY() >= Zen.getZenHeight()/2 + 60 && Zen.getMouseClickY() <= Zen.getZenHeight()/2 + 102) { ready2 = true;}
+		if(Zen.getMouseClickX() >= Zen.getZenWidth()/2 - 75 && Zen.getMouseClickX() <= Zen.getZenWidth()/2 + 71 && Zen.getMouseClickY() >= 100 && Zen.getMouseClickY() <= 140) { ready1 = true;}                       
+		if(Zen.getMouseClickX() >= Zen.getZenWidth()/2 - 75 && Zen.getMouseClickX() <= Zen.getZenWidth()/2 + 71 && Zen.getMouseClickY() >= Zen.getZenHeight() - 140 && Zen.getMouseClickY() <= Zen.getZenHeight() - 100) { ready2 = true;}
 	
 		if (ready1) { Zen.setColor(0,200,200);  Zen.fillRect(Zen.getZenWidth()/2 - 100, 100, 200, 40);} //covers up the ready button when clicked on
-		if (ready2){Zen.setColor(200,100,50);  Zen.fillRect(Zen.getZenWidth()/2 - 100, Zen.getZenHeight()/2 + 70, 200, 40);}  //covers up the ready button when clicked on                     
+		if (ready2){Zen.setColor(200,100,50);  Zen.fillRect(Zen.getZenWidth()/2 - 100, Zen.getZenHeight() - 140, 200, 40);}  //covers up the ready button when clicked on                     
 		if (ready1 && ready2) state = true;
 		
 		Zen.sleep(30);			
@@ -356,23 +356,23 @@ public class two_player_mode {
 			//draws the winners as well as the replay and menu buttons. Also makes them clickable
 			if (xb >= Zen.getZenWidth()/2 - 13 && xt >= Zen.getZenWidth()/2 - 13 && score2 > score1 && s1x <= Zen.getZenWidth()/2 - 60 && s2x >= Zen.getZenWidth()/2 - 64 && score1!=score2) {
 				Zen.setColor(0,0,0);
-				PixelatedText.drawPixelatedText("Player 1 Wins!",Zen.getZenWidth() /2 - 200,50, 6); 
+				PixelatedText.drawPixelatedText("Player 1 Wins!",Zen.getZenWidth() /2 - 200,120, 6); 
 				Zen.setColor(0, 200, 200);
-				Zen.fillRect(Zen.getZenWidth()/2 - 200, 270, 100, 40);
-				Zen.fillRect(Zen.getZenWidth()/2 + 100, 270, 100, 40);
-				Zen.fillOval(Zen.getZenWidth()/2 + 171, 270, 50, 40);
-				Zen.fillOval(Zen.getZenWidth()/2 + 76, 270, 50, 40);
-				Zen.fillOval(Zen.getZenWidth()/2 - 222, 270, 50, 40);
-				Zen.fillOval(Zen.getZenWidth()/2 - 129, 270, 50, 40);
-				PixelatedText.drawPixelatedText("Replay",Zen.getZenWidth()/2 - 194,283,3);
-				PixelatedText.drawPixelatedText("Menu",Zen.getZenWidth()/2 + 115,283,3);
-				if(click[0] >= Zen.getZenWidth()/2 -220 && click[0] <= Zen.getZenWidth()/2 - 80 && click[1] >= 270 && click[1] <= 310) {start();}
-				if(click[0] >= Zen.getZenWidth()/2 + 75 && click[0] <= Zen.getZenWidth()/2 + 222 && click[1] >= 270 && click[1] <= 310) {return;}
+				Zen.fillRect(Zen.getZenWidth()/2 - 200, Zen.getZenHeight() - 140, 100, 40);
+				Zen.fillRect(Zen.getZenWidth()/2 + 100, Zen.getZenHeight() - 140, 100, 40);
+				Zen.fillOval(Zen.getZenWidth()/2 + 171, Zen.getZenHeight() - 140, 50, 40);
+				Zen.fillOval(Zen.getZenWidth()/2 + 76, Zen.getZenHeight() - 140, 50, 40);
+				Zen.fillOval(Zen.getZenWidth()/2 - 222, Zen.getZenHeight() - 140, 50, 40);
+				Zen.fillOval(Zen.getZenWidth()/2 - 129, Zen.getZenHeight() - 140, 50, 40);
+				PixelatedText.drawPixelatedText("Replay",Zen.getZenWidth()/2 - 194,Zen.getZenHeight() - 127,3);
+				PixelatedText.drawPixelatedText("Menu",Zen.getZenWidth()/2 + 115,Zen.getZenHeight() - 127,3);
+				if(click[0] >= Zen.getZenWidth()/2 -220 && click[0] <= Zen.getZenWidth()/2 - 80 && click[1] >= Zen.getZenHeight() - 140 && click[1] <= Zen.getZenHeight() - 100) {start();}
+				if(click[0] >= Zen.getZenWidth()/2 + 75 && click[0] <= Zen.getZenWidth()/2 + 222 && click[1] >= Zen.getZenHeight() - 140 && click[1] <= Zen.getZenHeight() - 100) {return;}
 
 			}
 			if (xb >= Zen.getZenWidth()/2 - 13 && xt >= Zen.getZenWidth()/2 - 13 && score2 < score1 && s1x <= Zen.getZenWidth()/2 - 60 && s2x >= Zen.getZenWidth()/2 - 64) {
 				Zen.setColor(0,0,0);
-				PixelatedText.drawPixelatedText("Player 2 Wins!",Zen.getZenWidth() /2 - 200,300,6); 
+				PixelatedText.drawPixelatedText("Player 2 Wins!",Zen.getZenWidth() /2 - 200,Zen.getZenHeight() - 120,6); 
 				Zen.setColor(200,100,50);
 				Zen.fillRect(Zen.getZenWidth()/2 - 200, 100, 100, 40);
 				Zen.fillRect(Zen.getZenWidth()/2 + 100, 100, 100, 40);
@@ -388,22 +388,22 @@ public class two_player_mode {
 			}
 			if (xb >= Zen.getZenWidth()/2 - 13 && xt >= Zen.getZenWidth()/2 - 13 && score2 == score1 && s1x <= Zen.getZenWidth()/2 - 60 && s2x >= Zen.getZenWidth()/2 - 64) {
 				Zen.setColor(0,0,0);
-				PixelatedText.drawPixelatedText("It is a Tie!",350,100,6); 
-				PixelatedText.drawPixelatedText("It is a Tie!",350,270,6); 
+				PixelatedText.drawPixelatedText("It is a Tie!",350,120,6); 
+				PixelatedText.drawPixelatedText("It is a Tie!",350,Zen.getZenHeight() - 160,6); 
 				Zen.setColor(0, 200, 200);
-				Zen.fillRect(Zen.getZenWidth()/2 - 50, 320, 100, 40);
-				Zen.fillOval(Zen.getZenWidth()/2 + 21, 320, 50, 40);
-				Zen.fillOval(Zen.getZenWidth()/2 - 74, 320, 50, 40);
-				PixelatedText.drawPixelatedText("Menu",Zen.getZenWidth()/2 - 35,333,3);
-				if(click[0] >= Zen.getZenWidth()/2 - 75 &&click[0] <= Zen.getZenWidth()/2 + 71 && click[1] >= Zen.getZenHeight()/2 + 118 && click[1] <= Zen.getZenHeight()/2 + 160) { Interface.start();}                       
-				System.out.print(click[0] + "  ");
+				Zen.fillRect(Zen.getZenWidth()/2 - 50, Zen.getZenHeight() - 80, 100, 40);
+				Zen.fillOval(Zen.getZenWidth()/2 + 21, Zen.getZenHeight() - 80, 50, 40);
+				Zen.fillOval(Zen.getZenWidth()/2 - 74, Zen.getZenHeight() - 80, 50, 40);
+				PixelatedText.drawPixelatedText("Menu",Zen.getZenWidth()/2 - 35,Zen.getZenHeight() - 68,3);
+				if(click[0] >= Zen.getZenWidth()/2 - 75 &&click[0] <= Zen.getZenWidth()/2 + 71 && click[1] >= Zen.getZenHeight() - 80 && click[1] <= Zen.getZenHeight() - 40) { Interface.start();}                       
+			
 
 				Zen.setColor(200,100,50);
 				Zen.fillRect(Zen.getZenWidth()/2 - 50, 40, 100, 40);
 				Zen.fillOval(Zen.getZenWidth()/2 + 21, 40, 50, 40);
 				Zen.fillOval(Zen.getZenWidth()/2 - 74, 40, 50, 40);
 				PixelatedText.drawPixelatedText("Replay",Zen.getZenWidth()/2 - 42,53,3);
-				if(click[0] >= Zen.getZenWidth()/2 - 75 && click[0] <= Zen.getZenWidth()/2 + 71 && click[1] >= Zen.getZenHeight()/2 - 162 && click[1] <= Zen.getZenHeight()/2 - 120) { Interface.start();}                       
+				if(click[0] >= Zen.getZenWidth()/2 - 75 && click[0] <= Zen.getZenWidth()/2 + 71 && click[1] >= 40 && click[1] <= 80) { Interface.start();}                       
 
 			}
 
